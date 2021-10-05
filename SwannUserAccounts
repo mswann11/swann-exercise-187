@@ -1,0 +1,171 @@
+//AUTHOR: Marianne Swann
+//COURSE: CPT 187
+//PURPOSE: This program outlines instructions to create a user account, including a user name and associated password.
+//		   It can set users accounts by reading a text file. It can also search through existing user accounts
+//		   and check the associated password to find a match. It can add new users to the file as well.
+//CREATEDATE: 09/28/2021
+
+package edu.cpt187.swann.exercise6;
+
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Scanner;
+
+public class UserAccounts 
+{
+	//declare and initialized all class attributes
+	private final int NOT_FOUND = -1;
+	private final int RESET_VALUE = 0;
+	private final int MAXIMUM_RECORDS = 50;
+	private String[] userNames = new String[MAXIMUM_RECORDS];
+	private String[] passwords = new String[MAXIMUM_RECORDS];
+	private String masterFileName = "";
+	private int recordCount = 0;
+	private int searchedIndex = 0;
+
+	//constructor
+
+	//non-default constructor
+	public UserAccounts(String borrowedFileName)
+	{
+		masterFileName = borrowedFileName;
+	} //END OF non-default constructor
+
+	//setters
+
+	//setter to load user accounts from file
+	public void setUserAccountArrays()
+	{
+		//try block - tries to open a file an continues only if the file is opened
+		try 
+		{
+			//attempt to open the file
+			Scanner infile = new Scanner(new FileInputStream(masterFileName));
+
+			//reset record count
+			recordCount = RESET_VALUE;
+
+			//repetition structure to process each record in the file
+			//test for hasNext and maximum records
+			while (infile.hasNext() == true && recordCount < MAXIMUM_RECORDS)
+			{
+				//assign field values to array elements
+				userNames[recordCount] = infile.next();
+				passwords[recordCount] = infile.next();
+				//modify LCV
+				recordCount++;
+			} // END OF while
+
+			//close scanner
+			infile.close();
+		} //END OF try
+		//catch block - catches errors only if the try block fails to open a file
+		catch (IOException ex) 
+		{
+			//set flag to not found
+			recordCount = NOT_FOUND;
+		} //END OF catch
+	} //END OF setUserAccountArrays
+
+	//setter to assign searched index
+	public void setSearchedIndex(String borrowedUserName)
+	{
+		//invoke search and assign results to searchedIndex
+		searchedIndex = getSeqSearch(borrowedUserName);
+	} //END OF setSearchedIndex
+
+	//setter to assign searched index
+	public void setSearchedIndex(String borrowedUserName, String borrowedPassword)
+	{
+		//invoke search and assign results to searchedIndex
+		searchedIndex = getSeqSearch(borrowedUserName);
+
+		//selection structure to test searchedIndex and password
+		if (searchedIndex >= RESET_VALUE && getPasswordMatch(borrowedPassword) == false)
+		{
+			searchedIndex = NOT_FOUND;
+		} //END OF if
+	} //END OF setSearchedIndex
+
+	//setter to write record to file
+	public void setWriteOneRecord(String borrowedUserName, String borrowedPassword)
+	{
+		//uses file handling (write) logic; appends the file
+		//try block - tries to open a file and continues only if the file is opened
+		try
+		{
+			//attempt to open the file
+			PrintWriter filePW = new PrintWriter(new FileWriter(masterFileName, true));
+			//write borrowed values to file
+			filePW.printf("%n%s\t%s", borrowedUserName, borrowedPassword);
+			//increment record count
+			recordCount++;
+			//close PrintWriter/file
+			filePW.close();			
+		} //END OF try
+		catch (IOException ex)
+		{
+		} //END OF catch
+	} //END OF setWriteOneRecord
+
+	//getters
+
+	//getter to perform sequential search
+	public int getSeqSearch(String borrowedBorrowedUserName)
+	{
+		//declare and initialize local variables
+		int localIndex = 0;
+		int localFound = NOT_FOUND;
+
+		//repetition structure to run through array
+		while (localIndex < recordCount)
+		{
+			//test each value in array and compare to search
+			if (userNames[localIndex].equalsIgnoreCase(borrowedBorrowedUserName) == true)
+			{
+				//assign value to localFound if search ID is found
+				localFound = localIndex;
+				localIndex = recordCount;
+			} //END OF if
+			else
+			{
+				//modify LCV
+				localIndex++;
+			}
+		} //END OF repetition structure to run through array
+		return localFound;
+	} //END OF getSeqSearch
+
+	//getter to check password
+	public boolean getPasswordMatch(String borrowedBorrowedPassword)
+	{
+		//compare borrowed password to stored password
+		return passwords[searchedIndex].equals(borrowedBorrowedPassword);
+	} //END OF getPasswordMatch
+
+	//getter to return file name
+	public String getFileName()
+	{
+		return masterFileName;
+	} //END OF getFileName
+
+	//getter to return maximum records
+	public int getMaximumRecords()
+	{
+		return MAXIMUM_RECORDS;
+	} //END OF getMaximumRecords
+
+	//getter to return record count
+	public int getRecordCount()
+	{
+		return recordCount;
+	} //END OF getRecordCount
+
+	//getter to return searched index
+	public int getSearchedIndex()
+	{
+		return searchedIndex;
+	} //END OF getSearchedIndex
+}
