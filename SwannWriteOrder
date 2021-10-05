@@ -1,0 +1,76 @@
+//AUTHOR: Marianne Swann
+//COURSE: CPT 187
+//PURPOSE: This program outlines instructions for writing an order to a new file.
+//		   It writes the item ID, item name, price, quantity, and total to the file chosen by the user.
+//CREATEDATE: 09/28/2021
+
+package edu.cpt187.swann.exercise6;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+public class WriteOrder 
+{
+	//declare and initialized all class attributes
+	private boolean fileFoundFlag = false;
+	private String masterFileName = "";
+	private int recordCount = 0;
+
+	//constructor
+
+	//non-default constructor
+	public WriteOrder(String borrowedFileName)
+	{
+		//assign borrowedFileName to masterFileName
+		masterFileName = borrowedFileName;
+	} //END OF non-default constructor
+
+	//setters
+
+	//setter to write info to masterFileName
+	public void setWriteOrder(int borrowedItemID, String borrowedItemName, double borrowedItemPrice,
+			int borrowedQuantity, double borrowedOrderCost)
+	{
+		//uses file handling (write) logic; appends the file
+		//try block - tries to open a file and continues only if the file is opened
+		try
+		{
+			//attempt to open the file
+			PrintWriter filePW = new PrintWriter(new FileWriter(masterFileName, true));
+			//write borrowed values to file
+			filePW.printf("%n%d\t%s\t%f\t%d\t%f", borrowedItemID, borrowedItemName, borrowedItemPrice, borrowedQuantity, borrowedOrderCost);
+			//set flag to found
+			fileFoundFlag = true;
+			//increment record count
+			recordCount++;
+			//close PrintWriter/file
+			filePW.close();			
+		} //END OF try
+		catch (IOException ex)
+		{
+			//if file not found, set flag to not found
+			fileFoundFlag = false;
+		} //END OF catch	
+	} //END OF setWriteOrder
+
+	//getters
+
+	//getter to return fileFoundFlag attribute
+	public boolean getFileFoundFlag()
+	{
+		return fileFoundFlag;
+	} //END OF getFileFoundFlag
+
+	//getter to return masterFileName attribute
+	public String getFileName()
+	{
+		return masterFileName;
+	} //END OF getFileName
+
+	//getter to return recordCount attribute
+	public int getRecordCount()
+	{
+		return recordCount;
+	} //END OF getRecordCount
+} //END OF WriteOrder
